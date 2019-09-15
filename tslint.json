@@ -5,7 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
-        "disable-next-line": "no-console",
+        "disable-next-line": "no-console"
     },
     "rulesDirectory": []
 }

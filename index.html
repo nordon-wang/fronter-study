@@ -9,10 +9,55 @@
 </head>
 
 <body>
+  <div id="app">
+    <h1>模拟实现 VUE 源码</h1>
+    <div>
+      <p>person-name {{person.name}}</p>
+      <p v-text="person.name"></p>
+      <p>person-age {{person.age}}</p>
+    </div>
+    {{msg}}
+    <p>msg的内容: {{msg}}</p>
+    <p>textContent的内容: {{textContent}}</p>
+    <p v-text="textContent"></p>
+    <p v-html="htmlContent"></p>
+    <button v-on:click='clickBtn'>clickBtn</button>
+    <div>
+      <p v-text="textContent"></p>
+      <p v-html="htmlContent"></p>
+      <input type="text" v-model="inputContent">
+    </div>
+  </div>
 
-  <script src="./src/ts/exp1.js"></script>
-  <script src="./src/ts/d.js"></script>
+  <!-- <script src="./src/ts/exp1.js"></script> -->
+  <script src="./src/vue/compiler.js"></script>
+  <script src="./src/vue/vue.js"></script>
+  <script>
+    window.onload = function () {
+      const vm = new Vue({
+        el: '#app',
+        data: {
+          msg: 'hi',
+          textContent:'textContent',
+          htmlContent: 'htmlContent',
+          inputContent: 'inputContent',
+          person:{
+            name: 'nordon',
+            age:12,
+            hobby:['篮球','羽毛球']
+          }
+        },
+        methods:{
+          clickBtn(){
+            console.log(this);
+            console.log('click button 方法执行了', this.$data.msg);
+          }
+        }
+      })
 
+      // console.log(vm);
+    }
+  </script>
 </body>
 
 </html>
