@@ -93,14 +93,7 @@ class Compiler {
     // 解析文本节点 -- 解析里面的插值表达式
     compilerText(node) {
         // console.log('解析文本节点 -- test', node);
-        let txt = node.textContent;
-        let reg = /\{\{(.+)\}\}/;
-        // 判断是否有 插值表达式 若是有 就处理
-        if (reg.test(txt)) {
-            // 获取插值表达式的 变量
-            let expr = RegExp.$1;
-            node.textContent = txt.replace(reg, CompilerUtil.getVMValue(this.vm, expr));
-        }
+        CompilerUtil.mustache(node, this.vm);
     }
     /**
      * 工具方法 -- 辅助编译的方法
@@ -132,12 +125,41 @@ class Compiler {
 let CompilerUtil = {
     text(node, vm, expr) {
         node.textContent = this.getVMValue(vm, expr);
+        // 通过 watcher 对象，监听 expr 的数据变化，一旦发生变化，就执行 cb
+        new Watcher(vm, expr, (newValue) => {
+            node.textContent = newValue;
+        });
     },
     html(node, vm, expr) {
         node.innerHTML = this.getVMValue(vm, expr);
+        new Watcher(vm, expr, (newValue) => {
+            node.innerHTML = newValue;
+        });
+    },
+    mustache(node, vm) {
+        let txt = node.textContent;
+        let reg = /\{\{(.+)\}\}/;
+        // 判断是否有 插值表达式 若是有 就处理
+        if (reg.test(txt)) {
+            // 获取插值表达式的 变量
+            let expr = RegExp.$1;
+            node.textContent = txt.replace(reg, CompilerUtil.getVMValue(vm, expr));
+            new Watcher(vm, expr, (newValue) => {
+                node.textContent = txt.replace(reg, newValue);
+            });
+        }
     },
     model(node, vm, expr) {
+        const _this = this;
         node.value = this.getVMValue(vm, expr);
+        // 实现双向数据绑定
+        node.addEventListener('input', function () {
+            // vm.$data[expr] = this.value
+            _this.setVMValue(vm, expr, this.value);
+        });
+        new Watcher(vm, expr, (newValue) => {
+            node.value = newValue;
+        });
     },
     eventHandler(node, vm, expr, type) {
         // 给当前元素注册事件
@@ -153,6 +175,20 @@ let CompilerUtil = {
             data = data[key];
         });
         return data;
+    },
+    setVMValue(vm, expr, value) {
+        let data = vm.$data;
+        const arr = expr.split('.');
+        arr.forEach((key, index) => {
+            // 如果index是最后一个 就需要设置值了
+            console.log(data, index, arr.length - 1, key, value);
+            if (index < arr.length - 1) {
+                data = data[key];
+            }
+            else {
+                data[key] = value;
+            }
+        });
     }
 };
 //# sourceMappingURL=compiler.js.map
