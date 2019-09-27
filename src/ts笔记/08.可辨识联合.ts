@@ -10,16 +10,16 @@
  *  所谓单例类型，你可以理解为符合 单例模式 的数据类型，比如枚举成员类型，字面量类型。
  */
 interface Square {
-  kind: 'square'; // 这个就是具有辨识性的属性
+  kind: "square"; // 这个就是具有辨识性的属性
   size: number;
 }
 interface Rectangle {
-  kind: 'rectangle'; // 这个就是具有辨识性的属性
+  kind: "rectangle"; // 这个就是具有辨识性的属性
   height: number;
   width: number;
 }
 interface Circle {
-  kind: 'circle'; // 这个就是具有辨识性的属性
+  kind: "circle"; // 这个就是具有辨识性的属性
   radius: number;
 }
 
@@ -37,7 +37,7 @@ interface Circle {
 
 // Shape 新增一个类型
 interface Triangle {
-  kind: 'triangle';
+  kind: "triangle";
   bottom: number;
   height: number;
 }
@@ -59,17 +59,17 @@ type Shape = Square | Rectangle | Circle | Triangle; // 这里使用三个接口
 
 // 当函数返回一个错误或者不可能有返回值的时候，返回值类型为 never。所以可以给 switch 添加一个 default 流程，当前面的 case 都不符合的时候，会执行 default 后的逻辑：
 function assertNever(value: never): never {
-  throw new Error('Unexpected object: ' + value);
+  throw new Error("Unexpected object: " + value);
 }
 function getArea(s: Shape) {
   switch (s.kind) {
-    case 'square':
+    case "square":
       return s.size * s.size;
-    case 'rectangle':
+    case "rectangle":
       return s.height * s.width;
-    case 'circle':
+    case "circle":
       return Math.PI * s.radius ** 2;
-    case 'triangle':
+    case "triangle":
       return s.bottom * s.height;
     default:
       return assertNever(s); // error 类型“Triangle”的参数不能赋给类型“never”的参数

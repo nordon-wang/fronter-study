@@ -8,7 +8,10 @@
     "node_modules",
     "typings/main",
     "typings/main.d.ts",
-    "src/note"
+    "src/note",
+    "src/ts笔记",
+    "src/test",
+    "src/utils"
   ],
   "rules": {
     "strictNullChecks": true
