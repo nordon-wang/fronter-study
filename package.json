@@ -6,11 +6,18 @@
     "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\"",
     "lite": "lite-server",
     "tsc": "tsc",
-    "tsc:w": "tsc -w"
+    "tsc:w": "tsc -w",
+    "dev:pro": "node ./src/utils/pro.js",
+    "dev:t": "npm run dev:pro && npm run start"
   },
   "author": "nordon",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "figlet": "^1.2.4",
+    "inquirer": "^7.0.0",
+    "shelljs": "^0.8.3"
+  },
   "devDependencies": {
     "lite-server": "^2.2.0",
     "concurrently": "^2.0.0"

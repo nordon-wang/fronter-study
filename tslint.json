@@ -3,9 +3,11 @@
     "extends": [
         "tslint:recommended"
     ],
-    "jsRules": {},
+    "jsRules": {
+        // "disable-next-line": "no-console"
+    },
     "rules": {
-        "disable-next-line": "no-console"
+        "disable-next-line": "no-console",
     },
     "rulesDirectory": []
 }
