@@ -1,146 +1,191 @@
-function reactive(data, cb) {
-  let res = null;
-  let timer = null;
-
-  res = data instanceof Array ? [] : {};
-
-  for (let key in data) {
-    if (typeof data[key] === 'object') {
-      res[key] = reactive(data[key], cb);
-    } else {
-      res[key] = data[key];
-    }
-  }
-
-  return new Proxy(res, {
-    get(target, key) {
-      return Reflect.get(target, key);
-    },
-    set(target, key, val) {
-      let res = Reflect.set(target, key, val);
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        cb && cb();
-      }, 0);
-      return res;
-    }
-  });
+function Node(data, left, right) {
+  this.data = data;
+  this.left = left;
+  this.right = right;
 }
 
-let data = { foo: 'foo', bar: [1, 2] };
-let p = reactive(data, () => {
-  console.log('trigger');
-});
-p.bar.push(3);
-console.log(p.bar);
-
-// trigger
-const rawToReactive = new WeakMap();
-const reactiveToRaw = new WeakMap();
-
-// utils
-function isObject(val) {
-  return typeof val === 'object';
-}
-
-function hasOwn(val, key) {
-  const hasOwnProperty = Object.prototype.hasOwnProperty;
-  return hasOwnProperty.call(val, key);
-}
-
-// traps
-function createGetter() {
-  return function get(target, key, receiver) {
-    const res = Reflect.get(target, key, receiver);
-    return isObject(res) ? reactive(res) : res;
-  };
-}
-
-function set(target, key, val, receiver) {
-  const hadKey = hasOwn(target, key);
-  const oldValue = target[key];
-
-  val = reactiveToRaw.get(val) || val;
-  const result = Reflect.set(target, key, val, receiver);
-
-  if (!hadKey) {
-    console.log('trigger ...');
-  } else if (val !== oldValue) {
-    console.log('trigger ...');
-  }
-
-  return result;
-}
-
-// handler
-const mutableHandlers = {
-  get: createGetter(),
-  set: set
-};
-
-// entry
-function reactive(target) {
-  return createReactiveObject(
-    target,
-    rawToReactive,
-    reactiveToRaw,
-    mutableHandlers
-  );
-}
-
-function createReactiveObject(target, toProxy, toRaw, baseHandlers) {
-  let observed = toProxy.get(target);
-  // 原数据已经有相应的可响应数据, 返回可响应数据
-  if (observed !== void 0) {
-    return observed;
-  }
-  // 原数据已经是可响应数据
-  if (toRaw.has(target)) {
-    return target;
-  }
-  observed = new Proxy(target, baseHandlers);
-  toProxy.set(target, observed);
-  toRaw.set(observed, target);
-  return observed;
-}
-
-function mouseEvent() {
-  onMounted(() => {});
-
-  onUpdated(() => {});
-}
-
-const component = {
-  template: `<div>{x}</div>`,
-  setup() {
-    const x = value(0);
-    const y = value(0);
-
-    const update = e => {
-      x.value = e.pageX;
-      y.value = e.pageY;
-    };
-
-    onMounted(() => {
-      window.addEventListener('mousemove', update);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener('mousemove', update);
-    });
-
-    return {
-      x,
-      y
-    };
+Node.prototype = {
+  show: function() {
+    console.log(this.data);
   }
 };
 
-const c1 = {
-  props: {
-    name: String
+function Tree() {
+  this.root = null;
+}
+
+Tree.prototype = {
+  insert: function(data) {
+    var node = new Node(data, null, null);
+    if (!this.root) {
+      this.root = node;
+      return;
+    }
+    var current = this.root;
+    var parent = null;
+    while (current) {
+      parent = current;
+      if (data < parent.data) {
+        current = current.left;
+        if (!current) {
+          parent.left = node;
+          return;
+        }
+      } else {
+        current = current.right;
+        if (!current) {
+          parent.right = node;
+          return;
+        }
+      }
+    }
   },
-  setup(props) {
-    console.log(props.name);
+  preOrder: function(node) {
+    if (node) {
+      node.show();
+      this.preOrder(node.left);
+      this.preOrder(node.right);
+    }
+  },
+  middleOrder: function(node) {
+    if (node) {
+      this.middleOrder(node.left);
+      node.show();
+      this.middleOrder(node.right);
+    }
+  },
+  laterOrder: function(node) {
+    if (node) {
+      this.laterOrder(node.left);
+      this.laterOrder(node.right);
+      node.show();
+    }
+  },
+  getMin: function() {
+    var current = this.root;
+    while (current) {
+      if (!current.left) {
+        return current;
+      }
+      current = current.left;
+    }
+  },
+  getMax: function() {
+    var current = this.root;
+    while (current) {
+      if (!current.right) {
+        return current;
+      }
+      current = current.right;
+    }
+  },
+  getDeep: function(node, deep) {
+    deep = deep || 0;
+    if (node == null) {
+      return deep;
+    }
+    deep++;
+    var dleft = this.getDeep(node.left, deep);
+    var dright = this.getDeep(node.right, deep);
+    return Math.max(dleft, dright);
+  },
+  getNode: function(data, node) {
+    if (node) {
+      if (data === node.data) {
+        return node;
+      } else if (data < node.data) {
+        return this.getNode(data, node.left);
+      } else {
+        return this.getNode(data, node.right);
+      }
+    } else {
+      return null;
+    }
   }
 };
+
+var t = new Tree();
+t.insert(3);
+t.insert(8);
+t.insert(1);
+t.insert(2);
+t.insert(5);
+t.insert(7);
+t.insert(6);
+t.insert(0);
+
+console.log('-----', t);
+
+// t.middleOrder(t.root);
+// console.log(t.getMin(), t.getMax());
+// console.log(t.getDeep(t.root, 0));
+// console.log(t.getNode(5, t.root));
+
+var inorderTraversal = function(root, array = []) {
+  if (root) {
+    inorderTraversal(root.left, array);
+    array.push(root.data);
+    inorderTraversal(root.right, array);
+  }
+
+  return array;
+};
+
+var preorderTraversal = function(root, array = []) {
+  if (root) {
+    array.push(root.data);
+    preorderTraversal(root.left, array);
+    preorderTraversal(root.right, array);
+  }
+  return array;
+};
+
+var postorderTraversal = function(root, array = []) {
+  if (root) {
+    postorderTraversal(root.left, array);
+    postorderTraversal(root.right, array);
+    array.push(root.data);
+  }
+  return array;
+};
+
+console.log('中序', inorderTraversal(t.root));
+console.log('前序', preorderTraversal(t.root));
+console.log('后序', postorderTraversal(t.root));
+
+function reConstructBinaryTree(pre, vin) {
+  if (pre.length === 0) {
+    return null;
+  }
+  if (pre.length === 1) {
+    return new Node(pre[0]);
+  }
+  const value = pre[0];
+  const index = vin.indexOf(value);
+  const vinLeft = vin.slice(0, index);
+  const vinRight = vin.slice(index + 1);
+  const preLeft = pre.slice(1, index + 1);
+  const preRight = pre.slice(index + 1);
+  const node = new Node(value);
+  node.left = reConstructBinaryTree(preLeft, vinLeft);
+  node.right = reConstructBinaryTree(preRight, vinRight);
+  return node;
+}
+
+// let res1 = reConstructBinaryTree(
+//   [1, 2, 4, 7, 3, 5, 6, 8],
+//   [4, 7, 2, 1, 5, 3, 8, 6]
+// );
+// console.log(res1);
+function Mirror(root) {
+  if (root) {
+    const temp = root.right;
+    root.right = root.left;
+    root.left = temp;
+    Mirror(root.right);
+    Mirror(root.left);
+  }
+}
+
+Mirror(t.root);
+console.log(t);
