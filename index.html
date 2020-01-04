@@ -11,12 +11,25 @@
 </head>
 
 <body>
-  <div id="content">
-    <div id="id1">
-      <p id="p1">练习</p>
+  <div id="app">
+    <h1>Vue 练习</h1>
+    <div>
+      <p v-text='msg'></p>
+      <p v-text='foo'></p>
+      <input v-model='msg' /> 
+      <input v-model='foo' /> 
     </div>
   </div>
-  <script src="./src/structure-algorithm/quickSort.js"></script>
+  <script src="./src/demo/performance.js"></script>
+  <script>
+    {# new Vue({
+      el: '#app',
+      data: {
+        msg: '新消息',
+        foo: 'bar'
+      }
+    }) #}
+  </script>
 </body>
 
 </html>
