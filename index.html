@@ -7,28 +7,63 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Document</title>
   <style>
+    html * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #app div{
+      height: 200px;
+    }
+
+    #app .left{ 
+      float: left;
+      width: 200px;
+      height: 100px;
+      background: #f0f;
+    }
+
+    .right {
+      float: right;
+      width: 200px;
+      background-color: aqua;
+    }
+
+    .center{
+      background-color: antiquewhite;
+    }
   </style>
+
+  
 </head>
 
 <body>
   <div id="app">
-    <h1>Vue 练习</h1>
-    <div>
-      <p v-text='msg'></p>
-      <p v-text='foo'></p>
-      <input v-model='msg' /> 
-      <input v-model='foo' /> 
+    <div class='left'>11</div>
+    <div class='right'>
+      <p>111</p>
+    </div>
+    <div class='center'>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
+        <p>111</p>
     </div>
   </div>
-  <script src="./src/demo/performance.js"></script>
+  <script src="./src/demo/index.js"></script>
   <script>
-    {# new Vue({
-      el: '#app',
-      data: {
-        msg: '新消息',
-        foo: 'bar'
-      }
-    }) #}
+   
   </script>
 </body>
 
