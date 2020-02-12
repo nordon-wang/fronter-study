@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <h4>vue 进阶</h4>
+  <div id="app">
+    <h1>{{stage}} 平台课程：{{course.title}}</h1>
+    <p>{{course.title}} 是 {{course.author}} 发布的课程</p>
+    <p>发布时间为 {{course.publishTime}} </p>
+    <div>
+      <h1>{{stage}} 平台课程：{{course.title}}</h1>
+      <p>{{course.title}} 是 {{course.author}} 发布的课程</p>
+      <p>发布时间为 {{course.publishTime}} </p>
+    </div>
+  </div>
+
+  <script>
+    let data = {
+      stage: 'GitChat',
+      course: {
+        title: '前端开发进阶',
+        author: 'Lucas',
+        publishTime: '2018 年 5 月'
+      },
+    }
+
+    compile(document.querySelector('#app'), data);
+
+    function compile(el, data) {
+      let fragment = document.createDocumentFragment();
+      let child;
+
+
+
+      while ((child = el.firstChild)) {
+        // 将元素添加到 fragment 中之后，元素便会在页面上消失
+        fragment.appendChild(child);
+      }
+
+      // 对 el 里面的内容进行替换
+      function replace(fragment) {
+        Array.from(fragment.childNodes).forEach(node => {
+          let textContent = node.textContent;
+          let reg = /\{\{(.*?)\}\}/g;
+
+          if (node.nodeType === 3 && reg.test(textContent)) {
+            const nodeTextContent = node.textContent;
+            const replaceText = () => {
+              node.textContent = nodeTextContent.replace(
+                reg,
+                (matched, placeholder) => {
+                  console.log(matched, placeholder);
+
+                  return placeholder.split('.').reduce((prev, key) => {
+                    return prev[key];
+                  }, data);
+                }
+              );
+            };
+
+            replaceText();
+          }
+
+          // 如果还有子节点，继续递归 replace
+          if (node.childNodes && node.childNodes.length) {
+            replace(node);
+          }
+        });
+      }
+
+      replace(fragment);
+
+      el.appendChild(fragment);
+      return el;
+    }
+  </script>
+</body>
+
+</html>

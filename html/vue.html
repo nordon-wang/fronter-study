@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .wrap {
+      width: 1000px;
+      height: 400px;
+      left: 10%;
+      top: 10%;
+      position: relative;
+      background-color: aliceblue;
+    }
+
+    .cen {
+      width: 100px;
+      height: 100px;
+      margin-left: 10%;
+      margin-top: 10%;
+      padding-left: 10%;
+      padding-top: 10%;
+      /* background-color: aquamarine;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) */
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h1>模拟实现 VUE 源码</h1>
+    <div>
+      <p>person-name {{person.name}}</p>
+      <p v-text="person.name"></p>
+      <p>person-age {{person.age}}</p>
+    </div>
+    {{msg}}
+    <p>msg的内容: {{msg}}</p>
+    <p>textContent的内容: {{textContent}}</p>
+    <p v-text="textContent"></p>
+    <p v-html="htmlContent"></p>
+    <button v-on:click='clickBtn'>clickBtn</button>
+    <div>
+      <p v-html="htmlContent"></p>
+      <p v-text="textContent"></p>
+      <p v-html="inputContent"></p>
+      <p v-text="inputContent"></p>
+      <p>{{inputContent}}</p>
+      <input type="text" v-model="inputContent">
+      <p>person-name {{person.name}}</p>
+      {{person.name}}
+      <p v-text="person.name"></p>
+      <input type="text" v-model="person.name">
+    </div>
+  </div>
+
+  <!-- <script src="./src/ts/exp1.js"></script> -->
+  <script src="./src/vue/watcher.js"></script>
+  <script src="./src/vue/observer.js"></script>
+  <script src="./src/vue/compiler.js"></script>
+  <script src="./src/vue/vue.js"></script>
+  <script>
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        msg: 'hi',
+        textContent: 'textContent 数据',
+        htmlContent: 'htmlContent 数据',
+        inputContent: 'inputContent 数据',
+        person: {
+          name: 'nordon',
+          age: 12,
+          hobby: ['篮球', '羽毛球']
+        }
+      },
+      methods: {
+        clickBtn() {
+          console.log(this);
+          console.log('click button 方法执行了', this.$data.msg);
+          // this.$data.msg = Date.now()
+          this.msg = Date.now()
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
