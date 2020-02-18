@@ -48,6 +48,7 @@ function cache2fibonacci(n) {
   return _cacheFn(n);
 }
 
+// 1 1 2 3 5 8  21 
 console.log(
   recursive2fibonacci(15),
   `需要递归次数: ${recursive2fibonacciCount}`

@@ -271,3 +271,70 @@ console.log(c);
 Person.p1()
 
 
+
+/** 
+ * promise问题
+*/
+//#region 
+// 1.中断一个promise， 返回一个pending状态的 promise
+const breakOffPromise = new Promise((resolve, reject) => {
+  resolve()
+})
+
+breakOffPromise.then(() => {
+  console.log('执行');
+  return new Promise(() => {}) // 返回一个 pending 状态的 promise，就会中断，下一个 then就不执行了
+}).then(() => {
+  console.log('若是不中断，还是会执行');
+})
+
+// 2. finally 实现
+// finally 无论成功还是失败都会执行，且可以继续在 finally 之后继续 then
+Promise.prototype.finally = function (cb) {
+  return this.then(val => {
+    // 如果上一个 then 是成功， 就继续传递
+    return Promise.resolve(cb()).then(() => val)
+  }, err => {
+    return Promise.resolve(cb()).then(() => {
+      throw err // 如果上一个 then 是失败， 就继续抛出
+    })
+  })
+}
+
+
+Promise.reject('res').finally(() => {
+  console.log('finally...');
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('s')
+    }, 2000);
+  })
+}).then(data => {
+  console.log(`data is ${data}`);
+},err => {
+  console.log(`err is ${err}`);
+})
+
+/** 
+ * 3. promise 优缺点
+ *  优点
+ *    解决异步并发问题 promise.all
+ *    链式调用、解决回调地狱
+ *  缺点
+ *    还是基于回调的
+ *    promise无法终止
+*/
+
+
+// 4. Promise.race 实现
+Promise.race = function (promises) {
+  return new Promise((resolve, reject) => {
+    for (let index = 0; index < promises.length; index++) {
+      promises[i].then(resolve, reject)
+    }
+  })
+}
+
+//#endregion
+
+

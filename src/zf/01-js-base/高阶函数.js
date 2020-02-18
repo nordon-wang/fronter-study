@@ -8,6 +8,7 @@
  * 函数的before
  *  将核心逻辑提取出来，在外面增加功能
  */
+//#region 
 Function.prototype.before = function (fn) {
   return () => {
     fn()
@@ -24,12 +25,13 @@ const sayBefore = say.before(() => {
 })
 
 // sayBefore()
-
+//#endregion
 
 /** 
  * 2.事务
  *  开始的时候做某件事，结束的时候再做某件事
  */
+//#region 
 // 期望再say之前和之后都做一些事情
 const perform = (fn, wrapperList) => {
   // 1. 先将所有初始化的方法执行一遍
@@ -46,7 +48,8 @@ const perform = (fn, wrapperList) => {
   })
 
 }
-perform(() => {
+
+/* perform(() => {
   console.log('say');
 }, [{ //数组中的每一个对象相当于一个 wrapper
     initilizae() {
@@ -64,7 +67,8 @@ perform(() => {
       console.log('wrapper2 after...');
     }
   }
-])
+]) */
+//#endregion
 
 
 /** 
@@ -94,7 +98,7 @@ const curring = (fn, arr = []) => {
   let len = fn.length
   return (...args) => {
     arr = [...arr, ...args]
-    if(arr.length < len){
+    if (arr.length < len) {
       return curring(fn, arr)
     }
 
@@ -102,30 +106,76 @@ const curring = (fn, arr = []) => {
   }
 }
 
-console.log(curring(add)(1,2)(3)(4,5));
+// console.log(curring(add)(1,2)(3)(4,5));
 
 const checkType2 = (type, content) => {
   return Object.prototype.toString.call(content).slice(8, -1) === type
 }
-console.log(curring(checkType2)('Number')(2));
-console.log(curring(checkType2)('String')('2'));
-console.log(curring(checkType2)('String')(2));
+// console.log(curring(checkType2)('Number')(2));
+// console.log(curring(checkType2)('String')('2'));
+// console.log(curring(checkType2)('String')(2));
 
 /** 
  * 4. after
  *  调用函数多少次之后执行回掉
-*/
+ */
 const after = (times, fn) => {
   return () => {
-    if(--times === 0){
+    if (--times === 0) {
       fn()
     }
   }
 }
 
-const newAfter =after(2, () => {
+const newAfter = after(2, () => {
   console.log('after action...');
 })
 
-newAfter()
-newAfter()
+// newAfter()
+// newAfter()
+
+
+/** 
+ * 5. compose
+ */
+
+function concat(a, b) {
+  return a + b
+}
+
+function len(str) {
+  return str.length
+}
+
+function addCurrency(number) {
+  return `$ ${number}`
+}
+
+/* function compose(...args) {
+  return function (...args2) {
+    const fn = args.pop()
+
+    return args.reduceRight((res, current) => {
+      return current(res)
+    }, fn(...args2))
+  }
+} */
+
+/* const compose = (...args) => (...args2) => {
+  const fn = args.pop()
+  return args.reduceRight((res, current) => current(res), fn(...args2))
+} */
+
+
+/* const compose = (...fns) => {
+  return fns.reduce((prev, current) => {
+    return function (...args) {
+      return prev(current(...args))
+    }
+  })
+} */
+
+const compose = (...fns) => fns.reduce((a,b) => (...args) => a(b(...args)))
+
+const composeRes = compose(addCurrency, len, concat)('asd', 'qwe')
+console.log('composeRes', composeRes);
