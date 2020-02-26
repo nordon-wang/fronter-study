@@ -39,3 +39,4 @@ const req = function (file) {
 
 const r = req('./a.js')
 console.log(r);
+
