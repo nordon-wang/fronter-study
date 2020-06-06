@@ -8,7 +8,7 @@ const proto = Object.create(oldProto) // 新增一个
 
 arr.forEach(methodName => {
   proto[methodName] = function (...args) {
-    console.log('执行了');
+    // console.log('执行了');
     return oldProto[methodName].call(this, ...args)
   }
 })
@@ -23,4 +23,4 @@ function observe(array) {
 let a = [1,2,3]
 observe(a)
 a.push(22)
-console.log(a);
+// console.log(a);

@@ -81,4 +81,12 @@ const ac1 = new AnimalClass('小黄')
 // console.log(ac1);
 // console.log(ac1.hasOwnProperty('type'));
 // console.log(ac1.hasOwnProperty('name'));
+var arr = []
+var merged = arr.reduce(function(a, b) {
+  a.concat(b);
+}); // Noncompliant: No return statement
+let asd = 'asd'
 
+function foo() {
+  console.log("Hello, World!");
+}

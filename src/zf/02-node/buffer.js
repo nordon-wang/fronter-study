@@ -61,3 +61,10 @@ Buffer.prototype.split = function (sep) {
 }
 
 console.log(buf.split('\n'));
+
+
+
+let a = 1
+if(a =1 && a){
+  
+}

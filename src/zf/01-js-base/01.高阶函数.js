@@ -106,6 +106,7 @@ const curring = (fn, arr = []) => {
   }
 }
 
+
 // console.log(curring(add)(1,2)(3)(4,5));
 
 const checkType2 = (type, content) => {
@@ -130,6 +131,7 @@ const after = (times, fn) => {
 const newAfter = after(2, () => {
   console.log('after action...');
 })
+
 
 // newAfter()
 // newAfter()
