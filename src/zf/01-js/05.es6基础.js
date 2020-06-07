@@ -69,7 +69,7 @@ let a = 2 */
 // const obj = {
 //   [Symbol.toPrimitive](primitiveType){
 //     console.log(primitiveType); // primitiveType 默认是 default，会根据需要转的类型进行转换类型
-    
+
 //     return 1
 //   },
 //   toString(){
@@ -88,7 +88,7 @@ let a = 2 */
 // Symbol.toStringTag
 //#region 
 const obj = {
-  get [Symbol.toStringTag](){ // 加了get 代表是属性， 不是方法
+  get [Symbol.toStringTag]() { // 加了get 代表是属性， 不是方法
     return '111'
   }
 }

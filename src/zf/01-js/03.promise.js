@@ -93,6 +93,12 @@ class Promise {
     this.onRejectedCbs = []
 
     const resolve = (value) => {
+      // 若是 value 还是一个promise 
+      // 如果一个promise resolve 一个新的 promise, 会等到这个新的promise执行完成
+      if (value instanceof Promise) {
+        // 和 resolvePromise 的功能一样
+        return value.then(resolve, reject)
+      }
       if (this.status === PENDING) {
         this.status = FULFILLED
         this.value = value
@@ -118,7 +124,7 @@ class Promise {
   then(onFulfilled, onRejected) {
     // 函数处理
     onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : data => data
-    onRejected = typeof onRejected === 'function' ? onRejected : err => { throw err }
+    onRejected = typeof onRejected === 'function' ? onRejected : err => { throw new Error(err) }
 
     // then 方法调用后, 会继续返回一个新的promise, 保证可以无限链式调用
     const promise2 = new Promise((resolve, reject) => {
@@ -163,7 +169,7 @@ class Promise {
         this.onRejectedCbs.push(() => {
           try {
             setTimeout(() => {
-              const x = onFulfilled(this.reason)
+              const x = onRejected(this.reason)
               resolvePromise(promise2, x, resolve, reject)
             }, 0);
           } catch (e) {
@@ -175,6 +181,128 @@ class Promise {
 
     return promise2
   }
+
+  /** 
+   * catch === then(null, onRejected)
+   * catch 其实就是 then(null, err => {}) 的简写，没有处理resolve的 then
+  */
+  catch(onRejected) {
+    return this.then(null, onRejected)
+  }
+
+  // 创建一个成功的promise
+  static resolve(value) {
+    return new Promise((resolve, reject) => {
+      resolve(value)
+    })
+  }
+
+  // 创建一个失败的promise
+  static reject(reason) {
+    return new Promise((resolve, reject) => {
+      reject(reason)
+    })
+  }
+
+  /** 
+   * 不论成功还是失败都会执行
+  */
+  finally(callback) {
+    return this.then(val => {
+      // 等待 finally 中的函数执行完毕, 继续执行
+      // 如果返回的是一个promise, 会等待这个promise完成 
+      return Promise.resolve(callback()).then(() => val)
+      // return val // 如果上一个then是成功, 将其继续向下传递
+    }, err => {
+      return Promise.resolve(callback()).then(() => {
+        throw err;
+      })
+      // throw err // 如果上一个then是失败, 将其继续向下传递
+    })
+  }
+
+  try() {
+
+  }
+
+  /** 
+   * 全部执行 按照原有的顺序
+   * 全部成功 才算成功
+   * 有一个失败 就失败
+  */
+  static all(promises = []) {
+
+    // 判断是不是 promise
+    const isPromise = value => {
+      if ((typeof value === 'object' && value !== null) || typeof value === 'function') {
+        const then = value.then
+
+        return typeof then === 'function'
+      }
+
+      return false
+    }
+
+
+    return new Promise((resolve, reject) => {
+      const arr = [] // 存放最终结果
+      let count = 0 // 记录
+
+      // 处理结果
+      const processData = (index, data) => {
+        arr[index] = data
+        // 全部成功, 按照原有的位置进行返回
+        if (++count === promises.length) {
+          resolve(arr)
+        }
+      }
+
+      for (let i = 0; i < promises.length; i++) {
+        const current = promises[i]; // 获取当前项
+
+        if (isPromise(current)) { // 是 promise
+          // 直接调用then, 若是失败则直接reject,若是成功则记录,直到全部成功
+          current.then(data => {
+            processData(i, data)
+          }, reject)
+        } else { // 不是promise
+          processData(i, current)
+        }
+
+      }
+    })
+  }
+
+  /** 
+   * 有一个成功 就算成功
+   * 有一个失败 就算失败
+  */
+  static race(promises = []) {
+    // 判断是不是 promise
+    const isPromise = value => {
+      if ((typeof value === 'object' && value !== null) || typeof value === 'function') {
+        const then = value.then
+
+        return typeof then === 'function'
+      }
+
+      return false
+    }
+
+    return new Promise((resolve, reject) => {
+      for (let i = 0; i < promises.length; i++) {
+        const current = promises[i];
+        if (isPromise(current)) {
+          current.then(data => {
+            resolve(data)
+          }, reject)
+        } else {
+          resolve(current)
+        }
+      }
+    })
+  }
+
 }
 
 // 根据promise A+ 规范测试
