@@ -21,10 +21,12 @@ const deepClone = (value, hash = new WeakMap) => {
 
   // 拷贝的可能是数据或者对象
   let instance = new value.constructor // {} || []
-  if(hash.has(value)){
+
+  if(hash.has(value)){ // 先在hash中查找,若是存在直接返回,否则存一下
     return hash.get(value)
   }
   hash.set(value, instance) // 新的就放进来
+
   for (const key in value) {
     if(value.hasOwnProperty(key)){ // 排除原型上的方法
       instance[key] = deepClone(value[key], hash) // 递归处理
@@ -53,4 +55,15 @@ o.name = 'new name'
 o.person.age = 22
 console.log(obj, o);
 //#endregion
+
+
+
+let v1 = []
+let v2= {}
+let v3 = function () {
+}
+
+console.log(new v1.constructor);
+console.log(new v2.constructor);
+console.log( v3.constructor);
 
