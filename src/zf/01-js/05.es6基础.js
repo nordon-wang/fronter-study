@@ -97,40 +97,5 @@ console.log(obj.toString()); // [object 111]
 //#endregion
 
 
-/**
- * 模块化
- *  esModule 
- *    静态导入、不可以在作用域中导入
- *    若是需要动态导入，可以在作用域中导入使用，需要借助库实现，动态导入时 import 返回的是一个 promise 对象
- *    导出和使用的是按引用传递的，export 导出的值改变，每次获取的值都是最新值，会跟着变化而变化
- *  commonJs 
- *    导出和使用的是按值传递的，module.exports 导出的值改变，使用的地方不会改变
-*/
-
-//#region 
-export const a = 1; // 导出的是 a 变量，并不是导出 1
-// export default 'nordon' // 导出默认值是可以导出值，而不用导出变量，只能使用一次
-
-const s = 2
-const d = 3
-const h = 'hi'
-export {
-  s as s2, // as 别名
-  d,
-  h as default // 相当于 export default h
-}
-
-// 这样是不可以的，因为export 导出的变量，并不是一个对象(值)
-// export {
-//   f:1,
-//   g:1
-// }
-
-
-// 合并、整合导出文件
-// export * from './x.js' // 将x.js 中的所有export的变量都导出
-// export {a} from './y.js' // 只导出y.js 中所有export 导出的 a，其他的不导出，但是a不能在这个文件中使用
-
-//#endregion
 
 
