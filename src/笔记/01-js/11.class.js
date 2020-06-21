@@ -95,19 +95,16 @@ function Tiger(name) {
 
 
 /** 
- * Tiger.prototype = Object.create(Animal.prototype)
- *  推荐 也是最常用的
- *  Object.create是在 Tiger.prototype 和 Animal prototype之间增加了一层
-*/
-
-/** 
  * Tiger.prototype = new Animal()
  *    此时可以拿到Animal上的实例属性和公共属性
  *    缺点: 若是 Animal需要接受Tiger实例化时传递的参数, 无法传递
 */
+// Tiger.prototype = new Animal()
 
 /** 
  * Object.create方式
+ *  推荐 也是最常用的
+ *  Object.create是在 Tiger.prototype 和 Animal prototype之间增加了一层
  *  需要手动将constructor的指向指回来
 */
 Tiger.prototype = Object.create(Animal.prototype, {

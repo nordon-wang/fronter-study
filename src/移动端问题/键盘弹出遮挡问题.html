@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Document</title>
+  <style>
+    *{ 
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    #content {
+      width: 100%;
+      height: 100vh;
+      background-color: snow;
+      padding: 40px 0;
+    }
+
+
+    #header, #footer {
+      height: 40px;
+      width: 100%;
+      background-color: #f0f;
+    }
+
+    #header {
+      position: fixed;
+      top: 0;
+    }
+    #footer {
+      position: fixed;
+      bottom: 0;
+    }
+
+    #txt {
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(245, 233, 233);
+    }
+
+    #txt P {
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+    }
+
+     #txt P:nth-of-type(2n + 1) {
+       background-color: rgb(221, 221, 174);
+     }
+
+    #put {
+      width: 60%;
+      height: 30px;
+      margin-top: 4px;
+    }
+
+    .vc-switch {
+      bottom: 60px !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">
+    <div id="header">header</div>
+    <div id="txt">
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+      <p>txt</p>
+    </div>
+    <div id="footer">
+      <input id="put" type="text" name="" id="">
+    </div>
+  </div>
+  <script src="./jq.js"></script>
+  <script src="./vConsole.js"></script>
+  <script>
+    window.onload = function () { 
+      // var vConsole = require('./vconsole.min.js'); 
+      let vConsole = new VConsole()
+      
+      
+      $(document).on('focusin', function () {
+      　　//软键盘弹出的事件处理
+        let timer = setInterval(() => {
+          let scrollTop = $(document).scrollTop()
+          // let scrollTopTxt = $('#txt').scrollTop()
+          console.log('软键盘弹出的事件处理', scrollTop);
+          if(scrollTop) {
+            clearInterval(timer)
+            $('#header').css({
+              position: 'absolute',
+              top:`${scrollTop}px`
+            })
+
+            $('#txt').on('scroll', function (e) {
+              $('#txt').off('scroll')
+              $(document).off('scroll')
+              document.activeElement.blur();
+            })
+            $(document).on('scroll', function (e) {
+              $('#txt').off('scroll')
+              $(document).off('scroll')
+              document.activeElement.blur();
+            })
+          }
+        }, 20);
+      });
+
+        
+      $(document).on('focusout', function () {
+      　　//软键盘收起的事件处理
+          console.log('软键盘收起的事件处理');
+          $('#header').css({
+            position: 'fixed',
+            top: '0',
+          })
+          
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop= 0;
+          $('#txt').off('scroll')
+          $(document).off('scroll')
+      });
+     }
+  </script>
+</body>
+</html>
