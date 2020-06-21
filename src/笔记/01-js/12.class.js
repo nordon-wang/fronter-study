@@ -56,10 +56,49 @@ class Animal {
 
 class Tiger extends Animal {
   constructor(name) {
-    super() // Animal.call(this)
+    super() // Animal.call(this) 此时的super 指向的是父类
     this.name = name
+    
+  }
+
+  static getStaticCount() {
+    // 获取父类的静态属性
+    // super 指向的是父类
+    console.log(super.staticCount);
+  }
+
+  say() {
+    // 实例调用, 会调用 Tiger 上的 say, 若是还想调用父类Animal的say
+    super.say() // 调用父类的公共方法, 此时的super 指向的是父类的原型 Animal.prototype
+    console.log('tiger say ...');
+    
   }
 }
 
 const tiger = new Tiger('xiaohu')
 console.log(tiger);
+
+
+/** 
+ * new
+*/
+
+function NewObj() {
+  this.name = 'nordon'
+  this.age = 18
+}
+
+NewObj.prototype.say = function () {
+  
+}
+
+function _new(content, ...args) {
+  // 1. 创建一个对象, 并且将对象传入到函数中作为this
+  let obj = {}
+  content.call(obj)
+  obj.__proto__ = content.prototype
+  return obj
+}
+
+let o = _new(NewObj)
+console.log(o);
