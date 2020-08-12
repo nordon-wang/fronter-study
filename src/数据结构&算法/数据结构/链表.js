@@ -15,7 +15,7 @@ class Node {
     // this.prev = null
   }
 }
-``
+
 class LinkList {
   constructor() {
     this.header = null
