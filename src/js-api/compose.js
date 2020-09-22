@@ -22,3 +22,4 @@ const compose = (fns = []) => {
 }
 
 console.log(compose2(composeArr)('demo'));
+
